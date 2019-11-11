@@ -1,12 +1,13 @@
 grammar Lang;
 
 expression:
-      literal                           #exp_literal
-    | NOT expression                    #exp_not
-    | field                             #exp_field
-    | expression operator expression    #exp_operator
-    | '('expression')'                  #exp_parentheses
-    | function                          #exp_function
+      literal                               #literal_exp
+    | NOT expression                        #not_exp
+    | field                                 #field_exp
+    | function                              #function_exp
+    | expression operator expression        #operator_exp
+    | '('expression')'                      #parentheses_exp
+    | expression boolOperator expression    #bool_exp
 ;
 
 field: NAME;
@@ -14,26 +15,20 @@ field: NAME;
 literal: NUM
     | STRING
     | BOOL
-    | array
 ;
 
-array: INT_ARRAY | STRING_ARRAY;
-
 function: NAME'('expression')';
+operator:  GT | LT | GE | LE | EQ;
+boolOperator: AND | OR;
 
-INT_ARRAY: '[' NUM (',' NUM)* ']';
-STRING_ARRAY : '[' STRING (',' STRING)* ']';
-
-operator:  cmp | EQ | IN | AND | OR;
 GT: '>';
 GE: '>=';
 LT: '<';
 LE: '<=';
-cmp: GT | LT | GE | LE;
+EQ: '=' | '==';
+
 AND: 'and' | 'AND' | '&' | '&&';
 OR: 'or' | 'OR'| '|' | '||';
-IN: 'in' | 'IN';
-EQ: '=' | '==';
 
 NOT: 'not' | 'NOT' | '!';
 
@@ -46,3 +41,7 @@ FALSE: 'FALSE' | 'false';
 NAME: [a-z] ([A-Za-z0-9])*;
 
 WS: [' '\r\t\n] -> skip;
+
+//array: INT_ARRAY | STRING_ARRAY;
+//INT_ARRAY: '[' NUM (',' NUM)* ']';
+//STRING_ARRAY : '[' STRING (',' STRING)* ']';
