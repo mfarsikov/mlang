@@ -19,11 +19,11 @@ fun link(expression: Expression, classCtx: KClass<*>, functionCtx: List<KFunctio
 
         is Expression.Field -> LinkedField(
             field = expression,
-            returnType = classCtx.members.single { it.name == expression.name }.returnType,
-            extractor = classCtx.members.single { it.name == expression.name }
+            extractor = classCtx.members.first { it.name == expression.name },
+            returnType = classCtx.members.first { it.name == expression.name }.returnType
         )
 
-        is Expression.Fun -> {
+        is Expression.Function -> {
             val linkedParams = expression.params.map { link(it, classCtx, functionCtx) }
 
             LinkedFun(
@@ -46,7 +46,6 @@ private fun findMatching(functionCtx: List<KFunction<*>>, name: String, params: 
 }
 
 private fun matches(methodArgs: List<KType>, params: List<KType>): Boolean {
-    if (methodArgs.size != params.size) return false
     if (methodArgs == params) return true
     return methodArgs.zip(params).all { (methodArg, param) -> methodArg.jvmErasure.isSuperclassOf(param.jvmErasure) }
 }

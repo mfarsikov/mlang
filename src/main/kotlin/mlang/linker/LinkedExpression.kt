@@ -12,7 +12,7 @@ interface LinkedExpression {
 }
 
 data class LinkedFun(
-    val expression: Expression.Fun,
+    val expression: Expression.Function,
     val linkedParams: List<LinkedExpression>,
     val function: KFunction<*>
 ) : LinkedExpression {

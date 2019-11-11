@@ -16,21 +16,27 @@ class Visitor : LangBaseVisitor<Expression>() {
 
     override fun visitBool_exp(ctx: LangParser.Bool_expContext): Expression {
         return when {
-            ctx.boolOperator().AND() != null -> Expression.Fun("and", ctx.expression().map { visit(it) })
-            ctx.boolOperator().OR() != null -> Expression.Fun("or", ctx.expression().map { visit(it) })
+            ctx.boolOperator().AND() != null -> Expression.Function("and", ctx.expression().map { visit(it) })
+            ctx.boolOperator().OR() != null -> Expression.Function("or", ctx.expression().map { visit(it) })
             else -> throw RuntimeException()
         }
     }
 
     override fun visitOperator_exp(ctx: LangParser.Operator_expContext): Expression {
         return when {
-            ctx.operator().EQ() != null -> Expression.Fun("eq", ctx.expression().map { visit(it) })
-            ctx.operator().GE() != null -> Expression.Fun("ge", ctx.expression().map { visit(it) })
-            ctx.operator().GT() != null -> Expression.Fun("gt", ctx.expression().map { visit(it) })
-            ctx.operator().LE() != null -> Expression.Fun("le", ctx.expression().map { visit(it) })
-            ctx.operator().LT() != null -> Expression.Fun("lt", ctx.expression().map { visit(it) })
-            ctx.operator().PLUS() != null -> Expression.Fun("plus", ctx.expression().map { visit(it) })
-            ctx.operator().MINUS() != null -> Expression.Fun("minus", ctx.expression().map { visit(it) })
+            ctx.operator().EQ() != null -> Expression.Function("eq", ctx.expression().map { visit(it) })
+            ctx.operator().GE() != null -> Expression.Function("ge", ctx.expression().map { visit(it) })
+            ctx.operator().GT() != null -> Expression.Function("gt", ctx.expression().map { visit(it) })
+            ctx.operator().LE() != null -> Expression.Function("le", ctx.expression().map { visit(it) })
+            ctx.operator().LT() != null -> Expression.Function("lt", ctx.expression().map { visit(it) })
+            else -> throw RuntimeException()
+        }
+    }
+
+    override fun visitMathOperator_exp(ctx: LangParser.MathOperator_expContext): Expression {
+        return when {
+            ctx.mathOperator().PLUS() != null -> Expression.Function("plus", ctx.expression().map { visit(it) })
+            ctx.mathOperator().MINUS() != null -> Expression.Function("minus", ctx.expression().map { visit(it) })
             else -> throw RuntimeException()
         }
     }
@@ -40,10 +46,7 @@ class Visitor : LangBaseVisitor<Expression>() {
     }
 
     override fun visitFunction_exp(ctx: LangParser.Function_expContext): Expression {
-        return Expression.Fun(
-            ctx.function().NAME().text,
-            ctx.function().expression().map { visit(it) }
-        )
+        return Expression.Function(ctx.function().NAME().text, ctx.function().expression().map { visit(it) })
     }
 
     override fun visitParentheses_exp(ctx: LangParser.Parentheses_expContext): Expression {
@@ -51,6 +54,6 @@ class Visitor : LangBaseVisitor<Expression>() {
     }
 
     override fun visitNot_exp(ctx: LangParser.Not_expContext): Expression {
-        return Expression.Fun("not", listOf(visit(ctx.expression())))
+        return Expression.Function("not", listOf(visit(ctx.expression())))
     }
 }

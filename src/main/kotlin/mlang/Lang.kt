@@ -11,7 +11,6 @@ import org.antlr.v4.runtime.CommonTokenStream
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.kotlinFunction
 
 object Lang : KLogging() {
@@ -32,14 +31,11 @@ object Lang : KLogging() {
     }
 
     private fun loadFunctionFromFile(file: String): List<KFunction<*>> {
-        return Lang::loadFunctionFromFile
-            .javaMethod!!
-            .declaringClass
+        return javaClass
             .classLoader
             .loadClass("${file}Kt")
             .methods
             .filter { Modifier.isStatic(it.modifiers) }
-            .map { it.kotlinFunction }
-            .filterNotNull()
+            .mapNotNull { it?.kotlinFunction }
     }
 }

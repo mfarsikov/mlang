@@ -5,6 +5,7 @@ expression:
     | NOT expression                        #not_exp
     | field                                 #field_exp
     | function                              #function_exp
+    | expression mathOperator expression    #mathOperator_exp
     | expression operator expression        #operator_exp
     | '('expression')'                      #parentheses_exp
     | expression boolOperator expression    #bool_exp
@@ -18,8 +19,8 @@ literal: NUM
 ;
 
 function: NAME'(' expression? (',' expression)*')';
-
-operator:  GT | LT | GE | LE | EQ | PLUS | MINUS;
+mathOperator: PLUS | MINUS;
+operator:  GT | LT | GE | LE | EQ ;
 boolOperator: AND | OR;
 
 GT: '>';

@@ -1,7 +1,7 @@
 package mlang.parser
 
 sealed class Expression {
-    data class Fun(val name: String, val params: List<Expression>) : Expression()
+    data class Function(val name: String, val params: List<Expression>) : Expression()
 
     data class Field(val name: String) : Expression()
 
