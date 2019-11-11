@@ -17,6 +17,8 @@ dependencies {
     implementation( "org.jetbrains.kotlin:kotlin-reflect:1.3.50")
     implementation ("io.github.microutils:kotlin-logging:1.7.6")
 
+    runtime("ch.qos.logback:logback-classic:1.2.3")
+
     antlr("org.antlr:antlr4:4.7.2")
 }
 

@@ -1,3 +1,8 @@
+package mlang.parser
+
+import LangBaseVisitor
+import LangParser
+
 class Visitor : LangBaseVisitor<Expression>() {
 
     override fun visitLiteral_exp(ctx: LangParser.Literal_expContext): Expression.Literal {

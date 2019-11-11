@@ -1,7 +1,9 @@
+package mlang
+
 import java.time.LocalDate
 
 
-fun now() = LocalDate.now()
+fun today() = LocalDate.now()
 fun eq(a: Any, b: Any) = a == b
 fun date(date: String) = LocalDate.parse(date)
 fun not(a: Boolean) = !a

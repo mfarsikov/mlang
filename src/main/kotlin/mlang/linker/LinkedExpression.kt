@@ -1,5 +1,8 @@
-import java.math.BigDecimal
+package mlang.linker
+
+import mlang.parser.Expression
 import kotlin.reflect.KCallable
+import kotlin.reflect.KFunction
 import kotlin.reflect.KType
 import kotlin.reflect.full.starProjectedType
 
@@ -10,25 +13,25 @@ interface LinkedExpression {
 
 data class LinkedFun0(
     val expression: Expression.Fun0,
-    val function: Function.Function0
+    val function: KFunction<*>
 ) : LinkedExpression {
     override val returnType = function.returnType
     override fun evaluate(c: Any): Any {
-        return function.f()
+        return function.call()!!
     }
 }
 
 data class LinkedFun1(
     val expression: Expression.Fun1,
     val linkedParam1: LinkedExpression,
-    val function: Function.Function1
+    val function: KFunction<*>
 ) : LinkedExpression {
 
     override val returnType = function.returnType
 
     override fun evaluate(c: Any): Any {
         val param1 = linkedParam1.evaluate(c)
-        return function.f(param1)
+        return function.call(param1)!!
     }
 }
 
@@ -36,13 +39,13 @@ data class LinkedFun2(
     val expression: Expression.Fun2,
     val linkedParam1: LinkedExpression,
     val linkedParam2: LinkedExpression,
-    val function: Function.Function2
+    val function: KFunction<*>
 ) : LinkedExpression {
     override val returnType = function.returnType
     override fun evaluate(c: Any): Any {
         val param1 = linkedParam1.evaluate(c)
         val param2 = linkedParam2.evaluate(c)
-        return function.f(param1, param2)
+        return function.call(param1, param2)!!
     }
 }
 
@@ -51,7 +54,7 @@ data class LinkedFun3(
     val linkedParam1: LinkedExpression,
     val linkedParam2: LinkedExpression,
     val linkedParam3: LinkedExpression,
-    val function: Function.Function3
+    val function: KFunction<*>
 ) : LinkedExpression {
     override val returnType = function.returnType
 
@@ -59,7 +62,7 @@ data class LinkedFun3(
         val param1 = linkedParam1.evaluate(c)
         val param2 = linkedParam2.evaluate(c)
         val param3 = linkedParam3.evaluate(c)
-        return function.f(param1, param2, param3)
+        return function.call(param1, param2, param3)!!
     }
 }
 
@@ -69,7 +72,7 @@ data class LinkedField(
     val extractor: KCallable<*>
 ) : LinkedExpression {
     override fun evaluate(c: Any): Any {
-        return extractor.call(c)!! //TODO !!
+        return extractor.call(c)!!
     }
 }
 
@@ -83,7 +86,7 @@ sealed class LinkedLiteral : LinkedExpression {
 
     data class LinkedNumLiteral(
         val literal: Expression.Literal.NumLiteral,
-        override val returnType: KType = BigDecimal::class.starProjectedType
+        override val returnType: KType = Int::class.starProjectedType
     ) : LinkedLiteral() {
         override fun evaluate(c: Any) = literal.value
     }

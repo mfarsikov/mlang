@@ -1,4 +1,4 @@
-import java.math.BigDecimal
+package mlang.parser
 
 sealed class Expression {
     data class Fun0(val name: String) : Expression()
