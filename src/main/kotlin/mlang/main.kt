@@ -13,4 +13,3 @@ fun main() {
 data class Invoice(
     val value: Int = 10
 )
-

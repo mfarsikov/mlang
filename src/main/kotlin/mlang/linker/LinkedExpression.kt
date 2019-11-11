@@ -11,58 +11,15 @@ interface LinkedExpression {
     fun evaluate(c: Any): Any
 }
 
-data class LinkedFun0(
-    val expression: Expression.Fun0,
+data class LinkedFun(
+    val expression: Expression.Fun,
+    val linkedParams: List<LinkedExpression>,
     val function: KFunction<*>
 ) : LinkedExpression {
     override val returnType = function.returnType
     override fun evaluate(c: Any): Any {
-        return function.call()!!
-    }
-}
-
-data class LinkedFun1(
-    val expression: Expression.Fun1,
-    val linkedParam1: LinkedExpression,
-    val function: KFunction<*>
-) : LinkedExpression {
-
-    override val returnType = function.returnType
-
-    override fun evaluate(c: Any): Any {
-        val param1 = linkedParam1.evaluate(c)
-        return function.call(param1)!!
-    }
-}
-
-data class LinkedFun2(
-    val expression: Expression.Fun2,
-    val linkedParam1: LinkedExpression,
-    val linkedParam2: LinkedExpression,
-    val function: KFunction<*>
-) : LinkedExpression {
-    override val returnType = function.returnType
-    override fun evaluate(c: Any): Any {
-        val param1 = linkedParam1.evaluate(c)
-        val param2 = linkedParam2.evaluate(c)
-        return function.call(param1, param2)!!
-    }
-}
-
-data class LinkedFun3(
-    val expression: Expression.Fun3,
-    val linkedParam1: LinkedExpression,
-    val linkedParam2: LinkedExpression,
-    val linkedParam3: LinkedExpression,
-    val function: KFunction<*>
-) : LinkedExpression {
-    override val returnType = function.returnType
-
-    override fun evaluate(c: Any): Any {
-        val param1 = linkedParam1.evaluate(c)
-        val param2 = linkedParam2.evaluate(c)
-        val param3 = linkedParam3.evaluate(c)
-        return function.call(param1, param2, param3)!!
+        val params = linkedParams.map { it.evaluate(c) }.toTypedArray()
+        return function.call(*params)!!
     }
 }
 

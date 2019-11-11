@@ -8,7 +8,6 @@ import mlang.parser.Visitor
 import mu.KLogging
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
-import java.lang.RuntimeException
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
