@@ -15,6 +15,7 @@ repositories {
 dependencies {
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation( "org.jetbrains.kotlin:kotlin-reflect:1.3.50")
+    implementation ("io.github.microutils:kotlin-logging:1.7.6")
 
     antlr("org.antlr:antlr4:4.7.2")
 }

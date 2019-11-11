@@ -4,7 +4,10 @@ expression:
       literal                               #literal_exp
     | NOT expression                        #not_exp
     | field                                 #field_exp
-    | function                              #function_exp
+    | function0                              #function0_exp
+    | function1                              #function1_exp
+    | function2                              #function2_exp
+    | function3                              #function3_exp
     | expression operator expression        #operator_exp
     | '('expression')'                      #parentheses_exp
     | expression boolOperator expression    #bool_exp
@@ -17,7 +20,11 @@ literal: NUM
     | BOOL
 ;
 
-function: NAME'('expression')';
+function0: NAME'()';
+function1: NAME'('expression')';
+function2: NAME'('expression','expression')';
+function3: NAME'('expression','expression','expression')';
+
 operator:  GT | LT | GE | LE | EQ;
 boolOperator: AND | OR;
 

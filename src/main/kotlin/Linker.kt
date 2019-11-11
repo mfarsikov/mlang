@@ -1,10 +1,7 @@
 import java.lang.RuntimeException
-import java.math.BigDecimal
-import kotlin.reflect.KCallable
-import kotlin.reflect.KClass
-import kotlin.reflect.KType
-import kotlin.reflect.full.starProjectedType
-
+import kotlin.reflect.*
+import kotlin.reflect.full.*
+import kotlin.reflect.jvm.jvmErasure
 
 
 fun link(expression: Expression, clazz: KClass<*>, funcs: List<Function>): LinkedExpression {
@@ -24,7 +21,7 @@ fun link(expression: Expression, clazz: KClass<*>, funcs: List<Function>): Linke
             )
         }
 
-        is Expression.Fun0 ->{
+        is Expression.Fun0 -> {
             val f = funcs.filterIsInstance<Function.Function0>().single { it.name == expression.name }
 
             LinkedFun0(
@@ -36,7 +33,8 @@ fun link(expression: Expression, clazz: KClass<*>, funcs: List<Function>): Linke
             val linkedParam = link(expression.param1, clazz, funcs)
 
             val f = funcs.filterIsInstance<Function.Function1>()
-                    .single { it.inputTypes == listOf(linkedParam.returnType) && it.name == expression.name }
+                .singleOrNull() { matches(it.inputTypes, listOf(linkedParam.returnType)) && it.name == expression.name }
+                ?: throw RuntimeException("Cannot find function ${expression.name}(${linkedParam.returnType})")
 
             LinkedFun1(
                 expression = expression,
@@ -50,8 +48,14 @@ fun link(expression: Expression, clazz: KClass<*>, funcs: List<Function>): Linke
             val linkedParam2 = link(expression.param2, clazz, funcs)
 
             val f = funcs.filterIsInstance<Function.Function2>()
-                .singleOrNull { it.inputTypes == listOf(linkedParam1.returnType, linkedParam2.returnType) && it.name == expression.name }
-                ?: throw RuntimeException("Cannot find function ${expression.name}(${linkedParam1.returnType}, ${linkedParam2.returnType} ")
+                .singleOrNull {
+                    it.name == expression.name &&
+                            matches(
+                                it.inputTypes,
+                                listOf(linkedParam1.returnType, linkedParam2.returnType)
+                            )
+                }
+                ?: throw RuntimeException("Cannot find function ${expression.name}(${linkedParam1.returnType}, ${linkedParam2.returnType})")
 
             LinkedFun2(
                 expression = expression,
@@ -67,7 +71,17 @@ fun link(expression: Expression, clazz: KClass<*>, funcs: List<Function>): Linke
             val linkedParam3 = link(expression.param3, clazz, funcs)
 
             val f = funcs.filterIsInstance<Function.Function3>()
-                .single { it.inputTypes == listOf(linkedParam1.returnType, linkedParam2.returnType, linkedParam3.returnType) && it.name == expression.name }
+                .singleOrNull() {
+                    it.name == expression.name &&
+                            matches(
+                                it.inputTypes, listOf(
+                                    linkedParam1.returnType,
+                                    linkedParam2.returnType,
+                                    linkedParam3.returnType
+                                )
+                            )
+                }
+                ?: throw RuntimeException("Cannot find function ${expression.name}(${linkedParam1.returnType}, ${linkedParam2.returnType}, ${linkedParam3.returnType})")
 
             LinkedFun3(
                 expression = expression,
@@ -78,5 +92,11 @@ fun link(expression: Expression, clazz: KClass<*>, funcs: List<Function>): Linke
             )
         }
     }
+}
+
+private fun matches(methodArgs: List<KType>, params: List<KType>): Boolean {
+    if (methodArgs.size != params.size) return false
+    if (methodArgs == params) return true
+    return methodArgs.zip(params).all { (methodArg, param) -> methodArg.jvmErasure.isSuperclassOf(param.jvmErasure) }
 }
 
