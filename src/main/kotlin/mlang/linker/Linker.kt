@@ -43,7 +43,6 @@ private fun findMatching(functionCtx: List<KFunction<*>>, name: String, params: 
                     && matches(it.parameters.map { it.type }, params)
         }
         ?: throw RuntimeException("Cannot find function ${name}(${params.joinToString()})")
-
 }
 
 private fun matches(methodArgs: List<KType>, params: List<KType>): Boolean {

@@ -2,7 +2,7 @@ package mlang
 
 fun main() {
     val linkedGraph = Lang.parse(
-        expression = """ !(value >= 3 & between(today(), date("2019-11-11"), date("2019-11-11"))) """,
+        expression = """ NOT(value >= 3 AND between(today(), date("2019-11-11"), date("2019-11-11"))) """,
         context = Invoice::class,
         functionsFile = "mlang.Functions"
     )
