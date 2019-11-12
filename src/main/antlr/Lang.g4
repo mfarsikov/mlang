@@ -28,6 +28,7 @@ GE: '>=';
 LT: '<';
 LE: '<=';
 EQ: '=' | '==';
+//NEQ: '!=';
 PLUS: '+';
 MINUS: '-';
 
@@ -37,7 +38,7 @@ OR: 'or' | 'OR'| '|' | '||';
 NOT: 'not' | 'NOT' | '!';
 
 STRING: '"' .*? '"';
-NUM: [0-9]+ ('.' [0-9]+)?;
+NUM: [0-9]+ ('.' [0-9]+)?; // TODO int, double, bigdecimal
 BOOL: TRUE | FALSE;
 TRUE: 'TRUE' | 'true';
 FALSE: 'FALSE' | 'false';

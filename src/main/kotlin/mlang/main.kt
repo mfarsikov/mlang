@@ -1,15 +1,19 @@
 package mlang
 
+import java.time.LocalDate
+
 fun main() {
-    val linkedGraph = Lang.parse(
-        expression = """ NOT(value >= 3 AND between(today(), date("2019-11-11"), date("2019-11-11"))) """,
+    val compiledGraph = Lang.compile(
+        expression = """  amount < 100 & expirationDate > today() + days(5)  """,
         context = Invoice::class,
         functionsFile = "mlang.Functions"
     )
-    val result = linkedGraph.evaluate(Invoice())
+
+    val result = compiledGraph.evaluate(Invoice(amount = 10, expirationDate = LocalDate.parse("2019-12-31")))
     println(result)
 }
 
 data class Invoice(
-    val value: Int = 10
+    val amount: Int,
+    val expirationDate: LocalDate
 )

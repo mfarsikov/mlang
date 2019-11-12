@@ -14,7 +14,7 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.jvm.kotlinFunction
 
 object Lang : KLogging() {
-    fun parse(
+    fun compile(
         expression: String,
         context: KClass<*>,
         functionsFile: String
